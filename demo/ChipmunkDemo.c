@@ -240,7 +240,7 @@ DrawInfo()
 	cpFloat ke = 0.0f;
 	for(int i=0; i<bodies->num; i++){
 		cpBody *body = (cpBody *)bodies->arr[i];
-		if(body->m == INFINITY || body->i == INFINITY) continue;
+		if(isinf(body->m) || isinf(body->i)) continue;
 		
 		ke += body->m*cpvdot(body->v, body->v) + body->i*body->w*body->w;
 	}
@@ -475,7 +475,7 @@ Click(const sapp_event *event)
 			cpPointQueryInfo info = {0};
 			cpShape *shape = cpSpacePointQueryNearest(space, mouse_pos, radius, GRAB_FILTER, &info);
 			
-			if(shape && cpBodyGetMass(cpShapeGetBody(shape)) < INFINITY){
+			if(shape && isfinite(cpBodyGetMass(cpShapeGetBody(shape)))){
 				// Use the closest point on the surface if the click is outside of the shape.
 				cpVect nearest = (info.distance > 0.0f ? info.point : mouse_pos);
 				
@@ -562,6 +562,7 @@ extern ChipmunkDemo Unicycle;
 extern ChipmunkDemo Sticky;
 extern ChipmunkDemo Shatter;
 extern ChipmunkDemo GJK;
+extern ChipmunkDemo SleepFreezeTest;
 
 extern ChipmunkDemo bench_list[];
 extern int bench_count;
@@ -609,7 +610,8 @@ sapp_desc sokol_main(int argc, char* argv[]) {
 	demos[21] = Unicycle; //V
 	demos[22] = Sticky; //W
 	demos[23] = Shatter; //X
-	demo_count = 24;
+	demos[24] = SleepFreezeTest; //Y
+	demo_count = 25;
 	
 	int trial = 0;
 	for(int i=0; i<argc; i++){
